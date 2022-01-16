@@ -6,3 +6,5 @@ database_conection.py
 migrations/
 
 alembic.ini
+
+.env

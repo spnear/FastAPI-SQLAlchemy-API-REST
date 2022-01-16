@@ -27,6 +27,14 @@ readers = sqlalchemy.Table(
     sqlalchemy.Column("last_name", sqlalchemy.String),
 )
 
+readers_books = sqlalchemy.Table(
+    "readers_books",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("book_id", sqlalchemy.ForeignKey("books.id"), nullable=False),
+    sqlalchemy.Column("reader_id", sqlalchemy.ForeignKey("readers.id"), nullable=False)
+)
+
 # engine = sqlalchemy.create_engine(DATABASE_URL)
 # metadata.create_all(engine)
 
@@ -59,12 +67,22 @@ async def create_book(request: Request):
     last_record_id = await database.execute(query)
     return {"id": last_record_id}
 
-#Readers
 
+#Readers
 @app.post("/readers/")
 async def create_reader(request: Request):
     data = await request.json()
     query = readers.insert().values(**data)
+    last_record_id = await database.execute(query)
+    return {"id": last_record_id}
+
+
+#Readers_books
+
+@app.post("/read/")
+async def read_book(request: Request):
+    data = await request.json()
+    query = readers_books.insert().values(**data)
     last_record_id = await database.execute(query)
     return {"id": last_record_id}
 
